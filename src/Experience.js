@@ -1,18 +1,48 @@
 import {  useGLTF, OrbitControls } from '@react-three/drei'
 import { Perf } from 'r3f-perf'
-import {  CylinderCollider, BallCollider, CuboidCollider, Debug, RigidBody, Physics } from '@react-three/rapier'
-import {  useEffect, useState,useRef } from 'react'
+import {  InstancedRigidBodies, CylinderCollider, BallCollider, CuboidCollider, Debug, RigidBody, Physics } from '@react-three/rapier'
+import {  useMemo, useEffect, useState,useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
-import { Quaternion } from 'three'
+
+
+var sudut = 0
 
 export default function Experience()
 {
 
-  const cubesCount = 3
+  const cubesCount = 5
 
   const cubes = useRef()
 
+  const cubeTransforms = useMemo(() =>
+  {
+    const positions = []
+    const rotations = []
+    const scales = []
+
+    for(let i = 0; i < cubesCount; i++)
+    {
+      positions.push([ (Math.random() - 0.5) * 8, 6 + i * 0.2, (Math.random() - 0.5) * 8 ])
+      rotations.push([ Math.random(), Math.random(), Math.random() ])
+
+      const scale = 0.2 + Math.random() * 0.8
+      scales.push([ scale, scale, scale ])
+
+      /*
+      const matrix = new THREE.Matrix4()
+      matrix.compose(
+        new THREE.Vector3(i * 2, 0, 0),
+        new THREE.Quaternion(),
+        new THREE.Vector3(1, 1, 1)
+      )
+      */
+    }
+
+    return { positions, rotations, scales } 
+  }, [])
+
+  /*
   useEffect(() =>
   {
     for(let i = 0; i < cubesCount; i++)
@@ -27,6 +57,7 @@ export default function Experience()
     }
       
   }, [])
+  */
 
   const hamburger = useGLTF('./hamburger.glb')
   const [ hitSound ] = useState(() => new Audio('./hit.mp3'))
@@ -75,20 +106,17 @@ export default function Experience()
 
     const balokJump = () =>
     {
-        //console.log('muterrrr')
-        //console.log(meshRef.current.rotation())
-        const quaternion = new THREE.Quaternion();
-        let angle = Math.PI / 2;
-        //const eulerRotation = new THREE.Euler(0, angle , 0)
-        const putaran = quaternion.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), Math.PI / 2 );
-        //meshRef.current.rotation(new THREE.Vector3( 0, 1, 0 ), Math.PI / 2);
-        //meshRef.current.rotation(Quaternion,{ putaran })
-        const eulerRotation = new THREE.Euler(0, angle, 0)
+       
+        let angle = sudut + ( Math.PI / 2 );
+
+        sudut = angle
+
+        const eulerRotation = new THREE.Euler(0, angle , 0)
         const quaternionRotation = new THREE.Quaternion()
         quaternionRotation.setFromEuler(eulerRotation)
         meshRef.current.setNextKinematicRotation(quaternionRotation)
     }
-    
+ 
 
     return <>
 
@@ -100,7 +128,7 @@ export default function Experience()
         <ambientLight intensity={ 0.5 } />
 
         <Physics gravity={ [ 0, -9.8, 0 ] } >
-             <Debug />
+            {/* <Debug /> */}
             <RigidBody colliders="ball">
                  <mesh castShadow position={ [ -2, 4, 0 ] }>
                      <sphereGeometry />
@@ -183,12 +211,14 @@ export default function Experience()
                      <CylinderCollider args={ [ 0.5, 1.25 ] } /> 
                   </RigidBody>
 
+
                   <RigidBody type="fixed">
-                     <CuboidCollider args={ [ 5, 6, 0.5 ] } position={ [ 0, 1, 5.5 ] } />
-                     <CuboidCollider args={ [ 5, 6, 0.5 ] } position={ [ 0, 1, - 5.5 ] } />
-                     <CuboidCollider args={ [ 0.5, 6, 5 ] } position={ [ 5.5, 1, 0 ] } />
-                     <CuboidCollider args={ [ 0.5, 6, 5 ] } position={ [ - 5.5, 1, 0 ] } />
+                     <CuboidCollider args={ [ 5, 6, 0.5 ] } position={ [ 0, 3, 5.5 ] } />
+                     <CuboidCollider args={ [ 5, 6, 0.5 ] } position={ [ 0, 3, - 5.5 ] } />
+                     <CuboidCollider args={ [ 0.5, 6, 5 ] } position={ [ 5.5, 3, 0 ] } />
+                     <CuboidCollider args={ [ 0.5, 6, 5 ] } position={ [ - 5.5, 3, 0 ] } />
                   </RigidBody>
+
 
                   <RigidBody
                   ref={ meshRef }
@@ -203,11 +233,18 @@ export default function Experience()
                    </mesh>
                 </RigidBody>
 
-                  <instancedMesh  ref={ cubes }  castShadow receiveShadow args={[ null, null, cubesCount ]} >
+
+                <InstancedRigidBodies
+                positions={ cubeTransforms.positions }
+                rotations={ cubeTransforms.rotations }
+                scales={ cubeTransforms.scales }
+                >
+                   <instancedMesh  ref={ cubes }  castShadow receiveShadow args={[ null, null, cubesCount ]} >
 
                       <boxGeometry />
                      <meshStandardMaterial color="tomato" />
                   </instancedMesh>
+                </InstancedRigidBodies>
 
         </Physics>
 
