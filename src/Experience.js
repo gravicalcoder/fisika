@@ -11,7 +11,7 @@ var sudut = 0
 export default function Experience()
 {
 
-  const cubesCount = 5
+  const cubesCount = 2
 
   const cubes = useRef()
 
@@ -60,6 +60,12 @@ export default function Experience()
   */
 
   const hamburger = useGLTF('./hamburger.glb')
+
+  const dudukan = useGLTF('./dudukan-lampu-Body.glb')
+
+  const tuyul = useGLTF('./model.gltf')
+
+
   const [ hitSound ] = useState(() => new Audio('./hit.mp3'))
     
     const collisionEnter = () =>
@@ -128,7 +134,7 @@ export default function Experience()
         <ambientLight intensity={ 0.5 } />
 
         <Physics gravity={ [ 0, -9.8, 0 ] } >
-            {/* <Debug /> */}
+             <Debug /> 
             <RigidBody colliders="ball">
                  <mesh castShadow position={ [ -2, 4, 0 ] }>
                      <sphereGeometry />
@@ -212,11 +218,22 @@ export default function Experience()
                   </RigidBody>
 
 
+                  <RigidBody  position={ [ 2 , 11, 0 ] } >
+                    <primitive object={ dudukan.scene } scale={ 0.025 } />
+                     <CuboidCollider args={ [ 0.3, 0.25, 0.5 ] } /> 
+                  </RigidBody>
+
+                  <RigidBody  position={ [ 2 , 11, 0 ] } >
+                    <primitive object={ tuyul.scene } scale={ 5.5} />
+                     <CuboidCollider args={ [ 1, 1, 2 ] } /> 
+                  </RigidBody>
+
+
                   <RigidBody type="fixed">
-                     <CuboidCollider args={ [ 5, 6, 0.5 ] } position={ [ 0, 3, 5.5 ] } />
-                     <CuboidCollider args={ [ 5, 6, 0.5 ] } position={ [ 0, 3, - 5.5 ] } />
-                     <CuboidCollider args={ [ 0.5, 6, 5 ] } position={ [ 5.5, 3, 0 ] } />
-                     <CuboidCollider args={ [ 0.5, 6, 5 ] } position={ [ - 5.5, 3, 0 ] } />
+                     <CuboidCollider args={ [ 5,8, 0.5 ] } position={ [ 0, 4, 5.5 ] } />
+                     <CuboidCollider args={ [ 5, 8, 0.5 ] } position={ [ 0, 4, - 5.5 ] } />
+                     <CuboidCollider args={ [ 0.5, 8, 5 ] } position={ [ 5.5, 4, 0 ] } />
+                     <CuboidCollider args={ [ 0.5, 8, 5 ] } position={ [ - 5.5, 4, 0 ] } />
                   </RigidBody>
 
 
