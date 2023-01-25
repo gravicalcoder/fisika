@@ -11,7 +11,7 @@ var sudut = 0
 export default function Experience()
 {
 
-  const cubesCount = 2
+  const cubesCount = 2000
 
   const cubes = useRef()
 
@@ -112,9 +112,11 @@ export default function Experience()
 
     const balokJump = () =>
     {
+      
+       /***************************************** */
+        let angle = sudut + ( Math.PI / 6 );
+        /***************************************** */
        
-        let angle = sudut + ( Math.PI / 2 );
-
         sudut = angle
 
         const eulerRotation = new THREE.Euler(0, angle , 0)
