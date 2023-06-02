@@ -1,4 +1,4 @@
-import {  useGLTF, OrbitControls } from '@react-three/drei'
+import {  useAnimations, useGLTF, OrbitControls } from '@react-three/drei'
 import { Perf } from 'r3f-perf'
 import {  InstancedRigidBodies, CylinderCollider, BallCollider, CuboidCollider, Debug, RigidBody, Physics } from '@react-three/rapier'
 import {  useMemo, useEffect, useState,useRef } from 'react'
@@ -11,7 +11,7 @@ var sudut = 0
 export default function Experience()
 {
 
-  const cubesCount = 2000
+  const cubesCount = 2
 
   const cubes = useRef()
 
@@ -64,6 +64,21 @@ export default function Experience()
   const dudukan = useGLTF('./dudukan-lampu-Body.glb')
 
   const tuyul = useGLTF('./model.gltf')
+
+ 
+    const robot = useGLTF('./edit.glb')
+
+    //console.log(robot)
+
+    const animations = useAnimations(robot.animations, robot.scene)
+    console.log(animations)
+
+    useEffect(() =>
+    {
+       // const action = animations.actions.Run
+       const action = animations.actions.TPose
+        action.play()
+    }, [])
 
 
   const [ hitSound ] = useState(() => new Audio('./hit.mp3'))
@@ -229,6 +244,16 @@ export default function Experience()
                     <primitive object={ tuyul.scene } scale={ 5.5} />
                      <CuboidCollider args={ [ 1, 1, 2 ] } /> 
                   </RigidBody>
+
+                   {/*<RigidBody  position={ [ -12 , 11, 0 ] } >*/}
+                    <primitive 
+                    object={ robot.scene } 
+                    scale={ 5.5}
+                    position={ [ - 9.5, -1, 0 ] }
+                     rotation-y={ 0.5 }
+                     />
+                     {/*<CuboidCollider args={ [ 1, 3, 2 ] } /> */}
+                  {/* </RigidBody>*/}
 
 
                   <RigidBody type="fixed">
