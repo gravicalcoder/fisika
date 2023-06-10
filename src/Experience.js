@@ -1,9 +1,12 @@
-import {  useAnimations, useGLTF, OrbitControls } from '@react-three/drei'
+import {  useAnimations, useGLTF, OrbitControls, useKeyboardControls  } from '@react-three/drei'
 import { Perf } from 'r3f-perf'
 import {  InstancedRigidBodies, CylinderCollider, BallCollider, CuboidCollider, Debug, RigidBody, Physics } from '@react-three/rapier'
 import {  useMemo, useEffect, useState,useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
+import { useControls } from 'leva'
+//import { useKeyboardControls } from '@react-three/drei'
+
 
 
 var sudut = 0
@@ -71,15 +74,262 @@ export default function Experience()
     //console.log(robot)
 
     const animations = useAnimations(robot.animations, robot.scene)
-    console.log(animations)
 
-    useEffect(() =>
-    {
-       // const action = animations.actions.Run
-       const action = animations.actions.TPose
-        action.play()
-    }, [])
+   // const { actions } = useAnimations(animations, group)
+   
 
+    const [ subscribeKeys, getKeys ] = useKeyboardControls()
+
+    
+    function usePrevious(value) {
+      // The ref object is a generic container whose current property is mutable ...
+      // ... and can hold any value, similar to an instance property on a class
+      const ref = useRef();
+      // Store current value in ref
+      useEffect(() => {
+        ref.current = value;
+      }, [value]); // Only re-run if value changes
+      // Return previous value (happens before update in useEffect above)
+      return ref.current;
+    }
+
+   const [posisi, setPosisi] = useState([-10.5, -1, 0]);
+   const [rotationY, setRotationY] = useState(0.8);
+   const [runVelocity, setRunVelocity] = useState(7);
+   const [action, setAction] = useState(animations.actions.Idle);
+   //const runVelocityRef = useRef(7);
+   const previousAction = usePrevious(action);
+
+   
+
+		useFrame((state, delta) =>
+		{
+		    const keys = getKeys()
+		    
+        const { forward, backward, leftward, rightward, Shift  } = getKeys()
+
+
+         if (Shift  && runVelocity === 7) {
+          setRunVelocity(20);
+          setAction(animations.actions.Run)
+        } else if (Shift  && runVelocity === 20) {
+          setRunVelocity(7);
+          setAction(animations.actions.Walk)
+        }
+        
+
+      
+        //const noKeyPressed = !forward && !backward && !leftward && !rightward;
+
+        if (!forward && !backward && !leftward && !rightward) {
+          if(animations.actions.Walk){
+
+            if (previousAction) {
+             // actions[previousAction].fadeOut(0.2);
+              //actions[action].stop();
+              previousAction.fadeOut(0.2);
+              previousAction.stop();
+
+            }
+               // console.log(previousAction)
+                //action.stop()
+                 setAction(animations.actions.Idle)
+                 action.play
+                 //action.fadeIn(0.2);
+
+                 //action.reset().play()
+
+                 console.log('harusnya idle')  
+
+           } else {
+            setAction(animations.actions.Idle)
+            action.play
+
+
+           }
+           
+  
+        }
+   
+        else if (forward) {
+          if(animations.actions.Idle){
+              setAction(animations.actions.Walk)
+              action.play()
+          }
+          
+
+          const updatedPosisiX = posisi[0] - runVelocity * delta;
+          const updatedPosisi = [updatedPosisiX, posisi[1], posisi[2]];
+          //action.play()
+            
+          setPosisi(updatedPosisi);
+          setRotationY(1.5);
+
+        }
+
+        else if (backward) {
+          const updatedPosisiX = posisi[0] + runVelocity * delta;
+          const updatedPosisi = [updatedPosisiX, posisi[1], posisi[2]];
+          //action.play()
+          setPosisi(updatedPosisi);
+          setRotationY(-1.5);
+        } else if (leftward) {
+          const updatedPosisiZ = posisi[2] + runVelocity * delta;
+          const updatedPosisi = [posisi[0], posisi[1], updatedPosisiZ];
+          //action.play()
+          setPosisi(updatedPosisi);
+          setRotationY(3);
+        } else if (rightward) {
+          const updatedPosisiZ = posisi[2] - runVelocity * delta;
+          const updatedPosisi = [posisi[0], posisi[1], updatedPosisiZ];
+          //action.play()
+          setPosisi(updatedPosisi);
+          setRotationY(0);
+        }
+
+		})
+
+    useEffect(() => {
+      if (action === animations.actions.Idle) {
+        const timeout = setTimeout(() => {
+          action.play();
+        }, 0);
+      
+        return () => clearTimeout(timeout);
+      }
+    }, [action]);
+  
+    //return null;
+
+    /*
+    useEffect(() => {
+      const timeout = setTimeout(() => {
+        action.play();
+        console.log(action)
+      }, 0);
+  
+      return () => clearTimeout(timeout);
+    }, [action]);
+
+    */
+
+   
+
+    /*
+    const [posisi, setPosisi] = useState([-10.5, -1, 0]);
+    const [rotationY, setRotationY] = useState(0.8);
+    const [runVelocity, setRunVelocity] = useState(7);
+    
+    const action = useMemo(() => {
+      if (runVelocity === 7) {
+        return animations.actions.Walk;
+      } else {
+        return animations.actions.Run;
+      }
+    }, [runVelocity]);
+    
+    useFrame((state, delta) => {
+      const keys = getKeys();
+      const { forward, backward, leftward, rightward, Shift } = getKeys();
+      action.play();
+    
+      if (Shift && runVelocity === 7) {
+        setRunVelocity(20);
+      } else if (Shift && runVelocity === 20) {
+        setRunVelocity(7);
+      }
+    
+      const noKeyPressed = !forward && !backward && !leftward && !rightward;
+    
+      if (noKeyPressed) {
+        if (action !== animations.actions.Idle) {
+          setAction(animations.actions.Idle);
+          action.play();
+        }
+      } else if (forward) {
+        if (action !== animations.actions.Walk) {
+          setAction(animations.actions.Walk);
+          action.play();
+        }
+        const updatedPosisiX = posisi[0] - runVelocity * delta;
+        const updatedPosisi = [updatedPosisiX, posisi[1], posisi[2]];
+        setPosisi(updatedPosisi);
+        setRotationY(1.5);
+      } else if (backward) {
+        if (action !== animations.actions.Walk) {
+          setAction(animations.actions.Walk);
+          action.play();
+        }
+        const updatedPosisiX = posisi[0] + runVelocity * delta;
+        const updatedPosisi = [updatedPosisiX, posisi[1], posisi[2]];
+        setPosisi(updatedPosisi);
+        setRotationY(-1.5);
+      } else if (leftward) {
+        if (action !== animations.actions.Walk) {
+          setAction(animations.actions.Walk);
+          action.play();
+        }
+        const updatedPosisiZ = posisi[2] + runVelocity * delta;
+        const updatedPosisi = [posisi[0], posisi[1], updatedPosisiZ];
+        setPosisi(updatedPosisi);
+        setRotationY(3);
+      } else if (rightward) {
+        if (action !== animations.actions.Walk) {
+          setAction(animations.actions.Walk);
+          action.play();
+        }
+        const updatedPosisiZ = posisi[2] - runVelocity * delta;
+        const updatedPosisi = [posisi[0], posisi[1], updatedPosisiZ];
+        setPosisi(updatedPosisi);
+        setRotationY(0);
+      }
+    });
+     
+*/
+
+    /*
+    const posisiRef = useRef([-10.5, -1, 0]);
+const rotationYRef = useRef(0.8);
+const runVelocityRef = useRef(7);
+
+useFrame((state, delta) => {
+  const keys = getKeys();
+  console.log(keys);
+  const { forward, backward, leftward, rightward, Shift } = getKeys();
+
+  if (Shift && runVelocityRef.current === 7) {
+    runVelocityRef.current = 20;
+  } else if (Shift && runVelocityRef.current === 20) {
+    runVelocityRef.current = 7;
+  }
+
+  else if (forward) {
+    posisiRef.current[0] -= runVelocityRef.current * delta;
+    rotationYRef.current = 1.5;
+  } else if (backward) {
+    posisiRef.current[0] += runVelocityRef.current * delta;
+    rotationYRef.current = -1.5;
+  } else if (leftward) {
+    posisiRef.current[2] += runVelocityRef.current * delta;
+    rotationYRef.current = 3;
+  } else if (rightward) {
+    posisiRef.current[2] -= runVelocityRef.current * delta;
+    rotationYRef.current = 0;
+  }
+
+})
+
+*/
+
+ 
+
+   
+    
+
+    //const posisi = [ -10.5, -1, 0]
+ 
+
+    //const robotDulu = useGLTF('./Soldier.glb')
 
   const [ hitSound ] = useState(() => new Audio('./hit.mp3'))
     
@@ -174,7 +424,7 @@ export default function Experience()
 
              <RigidBody type="fixed"  restitution={ 1 } friction={ 0.7 } >
                 <mesh receiveShadow position-y={ - 1.25 }>
-                     <boxGeometry args={ [ 40, 0.5, 40 ] } />
+                     <boxGeometry args={ [ 80, 0.5, 80 ] } />
                      <meshStandardMaterial color="greenyellow" />
                  </mesh>
               </RigidBody>
@@ -245,16 +495,30 @@ export default function Experience()
                      <CuboidCollider args={ [ 1, 1, 2 ] } /> 
                   </RigidBody>
 
-                   {/*<RigidBody  position={ [ -12 , 11, 0 ] } >*/}
+                  {/* <RigidBody  position={ [ -12 , 11, 0 ] } >*/}
                     <primitive 
                     object={ robot.scene } 
                     scale={ 5.5}
-                    position={ [ - 9.5, -1, 0 ] }
+                    //position={ [ -9.5, -1, 0 ] }
+                    //position={ [ posisi.posisiX, posisi.posisiZ, posisi.posisiZ  ] }
+                    position={  posisi  }
+                     rotation-y={rotationY }
+                     />
+                     {/*<CuboidCollider args={ [ 1, 3, 2 ] } /> */}
+                  {/*</RigidBody>*/}
+
+                  {/*
+                  <RigidBody  position={ [ -12 , 11, 0 ] } >
+                  <primitive 
+                    object={ robotDulu.scene } 
+                    scale={ 5.5}
+                    position={ [  9.5, -1, 0 ] }
                      rotation-y={ 0.5 }
                      />
                      {/*<CuboidCollider args={ [ 1, 3, 2 ] } /> */}
-                  {/* </RigidBody>*/}
+                    {/*</RigidBody>
 
+                  */}
 
                   <RigidBody type="fixed">
                      <CuboidCollider args={ [ 5,8, 0.5 ] } position={ [ 0, 4, 5.5 ] } />
@@ -266,12 +530,12 @@ export default function Experience()
 
                   <RigidBody
                   ref={ meshRef }
-                   position={ [ -8, - 0.8, 0 ] }
+                   position={ [ -9, - 0.8, 0 ] }
                     friction={ 0 }
                     type="kinematicPosition"
                     onClick={ balokJump }
                      >
-                    <mesh castShadow scale={ [ 0.4, 0.4, 3 ] }>
+                    <mesh castShadow scale={ [ 0.4, 0.4, 8 ] }>
                        <boxGeometry />
                        <meshStandardMaterial color="red" />
                    </mesh>
