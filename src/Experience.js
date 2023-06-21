@@ -14,7 +14,7 @@ var sudut = 0
 export default function Experience()
 {
 
-  const cubesCount = 2
+  const cubesCount = 20
 
   const cubes = useRef()
 
@@ -97,7 +97,6 @@ export default function Experience()
    const [rotationY, setRotationY] = useState(0.8);
    const [runVelocity, setRunVelocity] = useState(7);
    const [action, setAction] = useState(animations.actions.Idle);
-   //const runVelocityRef = useRef(7);
    const previousAction = usePrevious(action);
 
    
@@ -111,6 +110,7 @@ export default function Experience()
 
          if (Shift  && runVelocity === 7) {
           setRunVelocity(20);
+          
           setAction(animations.actions.Run)
         } else if (Shift  && runVelocity === 20) {
           setRunVelocity(7);
@@ -118,30 +118,34 @@ export default function Experience()
         }
         
 
-      
-        //const noKeyPressed = !forward && !backward && !leftward && !rightward;
+ 
 
         if (!forward && !backward && !leftward && !rightward) {
-          if(animations.actions.Walk){
+          if(animations.actions.Walk || animations.actions.Run || animations.actions.TPose){
 
             if (previousAction) {
-             // actions[previousAction].fadeOut(0.2);
-              //actions[action].stop();
+
               previousAction.fadeOut(0.2);
               previousAction.stop();
 
             }
-               // console.log(previousAction)
-                //action.stop()
+            
                  setAction(animations.actions.Idle)
                  action.play
-                 //action.fadeIn(0.2);
 
-                 //action.reset().play()
 
                  console.log('harusnya idle')  
 
-           } else {
+           } if (action !== animations.actions.Idle) {
+            if (previousAction) {
+              previousAction.fadeOut(0.2);
+              previousAction.stop();
+            }
+            setAction(animations.actions.Idle);
+            action.play();
+            console.log('harusnya idle');
+          }
+           else  {
             setAction(animations.actions.Idle)
             action.play
 
@@ -152,10 +156,15 @@ export default function Experience()
         }
    
         else if (forward) {
-          if(animations.actions.Idle){
+          if(animations.actions.Idle && runVelocity == 7 ){
+
               setAction(animations.actions.Walk)
               action.play()
-          }
+          } else if (animations.actions.Run && runVelocity == 20){
+
+            setAction(animations.actions.Run)
+            action.play()
+        }
           
 
           const updatedPosisiX = posisi[0] - runVelocity * delta;
@@ -163,23 +172,50 @@ export default function Experience()
           //action.play()
             
           setPosisi(updatedPosisi);
-          setRotationY(1.5);
+          setRotationY(1.6);
 
         }
 
         else if (backward) {
+          if(animations.actions.Idle && runVelocity == 7){
+
+               setAction(animations.actions.Walk)
+               action.play()
+           } else if (animations.actions.Run && runVelocity == 20){
+
+            setAction(animations.actions.Run)
+            action.play()
+        }
           const updatedPosisiX = posisi[0] + runVelocity * delta;
           const updatedPosisi = [updatedPosisiX, posisi[1], posisi[2]];
           //action.play()
           setPosisi(updatedPosisi);
-          setRotationY(-1.5);
+          setRotationY(-1.6);
         } else if (leftward) {
+          if(animations.actions.Idle && runVelocity == 7){
+
+            setAction(animations.actions.Walk)
+            action.play()
+        } else if (animations.actions.Run && runVelocity == 20){
+
+          setAction(animations.actions.Run)
+          action.play()
+      }
           const updatedPosisiZ = posisi[2] + runVelocity * delta;
           const updatedPosisi = [posisi[0], posisi[1], updatedPosisiZ];
           //action.play()
           setPosisi(updatedPosisi);
-          setRotationY(3);
+          setRotationY(3.2);
         } else if (rightward) {
+          if(animations.actions.Idle && runVelocity == 7 ){
+
+            setAction(animations.actions.Walk)
+            action.play()
+           }else if (animations.actions.Run && runVelocity == 20){
+
+           setAction(animations.actions.Run)
+           action.play()
+           }
           const updatedPosisiZ = posisi[2] - runVelocity * delta;
           const updatedPosisi = [posisi[0], posisi[1], updatedPosisiZ];
           //action.play()
@@ -199,137 +235,12 @@ export default function Experience()
       }
     }, [action]);
   
-    //return null;
 
-    /*
-    useEffect(() => {
-      const timeout = setTimeout(() => {
-        action.play();
-        console.log(action)
-      }, 0);
-  
-      return () => clearTimeout(timeout);
-    }, [action]);
-
-    */
-
-   
-
-    /*
-    const [posisi, setPosisi] = useState([-10.5, -1, 0]);
-    const [rotationY, setRotationY] = useState(0.8);
-    const [runVelocity, setRunVelocity] = useState(7);
-    
-    const action = useMemo(() => {
-      if (runVelocity === 7) {
-        return animations.actions.Walk;
-      } else {
-        return animations.actions.Run;
-      }
-    }, [runVelocity]);
-    
-    useFrame((state, delta) => {
-      const keys = getKeys();
-      const { forward, backward, leftward, rightward, Shift } = getKeys();
-      action.play();
-    
-      if (Shift && runVelocity === 7) {
-        setRunVelocity(20);
-      } else if (Shift && runVelocity === 20) {
-        setRunVelocity(7);
-      }
-    
-      const noKeyPressed = !forward && !backward && !leftward && !rightward;
-    
-      if (noKeyPressed) {
-        if (action !== animations.actions.Idle) {
-          setAction(animations.actions.Idle);
-          action.play();
-        }
-      } else if (forward) {
-        if (action !== animations.actions.Walk) {
-          setAction(animations.actions.Walk);
-          action.play();
-        }
-        const updatedPosisiX = posisi[0] - runVelocity * delta;
-        const updatedPosisi = [updatedPosisiX, posisi[1], posisi[2]];
-        setPosisi(updatedPosisi);
-        setRotationY(1.5);
-      } else if (backward) {
-        if (action !== animations.actions.Walk) {
-          setAction(animations.actions.Walk);
-          action.play();
-        }
-        const updatedPosisiX = posisi[0] + runVelocity * delta;
-        const updatedPosisi = [updatedPosisiX, posisi[1], posisi[2]];
-        setPosisi(updatedPosisi);
-        setRotationY(-1.5);
-      } else if (leftward) {
-        if (action !== animations.actions.Walk) {
-          setAction(animations.actions.Walk);
-          action.play();
-        }
-        const updatedPosisiZ = posisi[2] + runVelocity * delta;
-        const updatedPosisi = [posisi[0], posisi[1], updatedPosisiZ];
-        setPosisi(updatedPosisi);
-        setRotationY(3);
-      } else if (rightward) {
-        if (action !== animations.actions.Walk) {
-          setAction(animations.actions.Walk);
-          action.play();
-        }
-        const updatedPosisiZ = posisi[2] - runVelocity * delta;
-        const updatedPosisi = [posisi[0], posisi[1], updatedPosisiZ];
-        setPosisi(updatedPosisi);
-        setRotationY(0);
-      }
-    });
-     
-*/
-
-    /*
-    const posisiRef = useRef([-10.5, -1, 0]);
-const rotationYRef = useRef(0.8);
-const runVelocityRef = useRef(7);
-
-useFrame((state, delta) => {
-  const keys = getKeys();
-  console.log(keys);
-  const { forward, backward, leftward, rightward, Shift } = getKeys();
-
-  if (Shift && runVelocityRef.current === 7) {
-    runVelocityRef.current = 20;
-  } else if (Shift && runVelocityRef.current === 20) {
-    runVelocityRef.current = 7;
-  }
-
-  else if (forward) {
-    posisiRef.current[0] -= runVelocityRef.current * delta;
-    rotationYRef.current = 1.5;
-  } else if (backward) {
-    posisiRef.current[0] += runVelocityRef.current * delta;
-    rotationYRef.current = -1.5;
-  } else if (leftward) {
-    posisiRef.current[2] += runVelocityRef.current * delta;
-    rotationYRef.current = 3;
-  } else if (rightward) {
-    posisiRef.current[2] -= runVelocityRef.current * delta;
-    rotationYRef.current = 0;
-  }
-
-})
-
-*/
 
  
 
    
     
-
-    //const posisi = [ -10.5, -1, 0]
- 
-
-    //const robotDulu = useGLTF('./Soldier.glb')
 
   const [ hitSound ] = useState(() => new Audio('./hit.mp3'))
     
