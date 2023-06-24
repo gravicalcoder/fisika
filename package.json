@@ -21,7 +21,8 @@
     "react-dom": "^18.2.0",
     "react-scripts": "^5.0.1",
     "three": "^0.145.0",
-    "vercel": "^28.15.0"
+    "vercel": "^28.15.0",
+    "zustand": "^4.3.8"
   },
   "browserslist": {
     "production": [
