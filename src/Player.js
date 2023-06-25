@@ -34,6 +34,8 @@ export default function Player()
      const [action, setAction] = useState(animations.actions.Idle);
      const previousAction = usePrevious(action);
 
+    
+
      useFrame((state, delta) =>
 		{
 		    const keys = getKeys()
@@ -328,35 +330,70 @@ export default function Player()
         }
   
          */
-       
 
-        if (!forward && !backward && !leftward && !rightward) {
+        function runForward(){
+            if(Shift){
+                //previousAction.fadeOut(0.2);
+                previousAction.stop();
+                walkForward()} else {
+        
+             setRunVelocity(20);
+             setAction(animations.actions.Run);
+             action.play();
+             const updatedPosisiX = posisi[0] - runVelocity * delta;
+             const updatedPosisi = [updatedPosisiX, posisi[1], posisi[2]];
+             setPosisi(updatedPosisi);
+                setRotationY(1.8);
+            }
+        }
+
+        function walkForward(){
+            if(!Shift){
+                     //previousAction.fadeOut(0.2);
+                  previousAction.stop();
+                runForward()} else {
+             console.log('jalan kedepan')
+                setRunVelocity(7);
+                 setAction(animations.actions.Walk);
+                    action.play();
+                    const updatedPosisiX = posisi[0] - runVelocity * delta;
+                    const updatedPosisi = [updatedPosisiX, posisi[1], posisi[2]];
+                    setPosisi(updatedPosisi);
+                    setRotationY(1.8);
+            }
+    }
+       
+     if (!forward && !backward && !leftward && !rightward) {
             if (animations.actions.Walk || animations.actions.Run || animations.actions.TPose) {
                 if (previousAction) {
-                  previousAction.fadeOut(0.2);
+                  //previousAction.fadeOut(0.2);
                   previousAction.stop();
                   setAction(animations.actions.Idle);
                     action.play();
+                    
                 }
 
                 if (action !== animations.actions.Idle) {
                     if (previousAction) {
-                      previousAction.fadeOut(0.2);
+                      //previousAction.fadeOut(0.2);
                       previousAction.stop();
                       setAction(animations.actions.Idle);
                     action.play();
                     }
+                    previousAction.stop();
                     setAction(animations.actions.Idle);
                     action.play();
+                   
                     console.log('harusnya idle 2');
                   } else {
+                   // previousAction.stop();
                     setAction(animations.actions.Idle);
                     action.play();
                     console.log('harusnya idle 1');
                   }
 
               }  else if (previousAction) {
-                previousAction.fadeOut(0.2);
+                //previousAction.fadeOut(0.2);
                 previousAction.stop();
                 setAction(animations.actions.Idle);
                 action.play();
@@ -365,14 +402,8 @@ export default function Player()
                 action.play();
               }
           } else if (forward && Shift) {
-            console.log('jalan kedepan')
-            setRunVelocity(7);
-            setAction(animations.actions.Walk);
-            action.play();
-            const updatedPosisiX = posisi[0] - runVelocity * delta;
-            const updatedPosisi = [updatedPosisiX, posisi[1], posisi[2]];
-            setPosisi(updatedPosisi);
-            setRotationY(1.8);
+            walkForward()
+     
           } else if (backward && Shift) {
             console.log('jalan kebelakang')
             setRunVelocity(7);
@@ -399,21 +430,25 @@ export default function Player()
             setPosisi(updatedPosisi);
             setRotationY(0);
           } else if (Shift) {
+            previousAction.fadeOut(0.2);
+             previousAction.stop();
             setRunVelocity(7);
             setAction(animations.actions.Walk);
           } else if (forward) {
-            if (Shift) {
-              setRunVelocity(7);
-              setAction(animations.actions.Walk);
-            } else {
-              setRunVelocity(20);
-              setAction(animations.actions.Run);
-            }
+             runForward() 
+           
+            /*   
+            setRunVelocity(20);
+            setAction(animations.actions.Run);
             action.play();
             const updatedPosisiX = posisi[0] - runVelocity * delta;
             const updatedPosisi = [updatedPosisiX, posisi[1], posisi[2]];
             setPosisi(updatedPosisi);
             setRotationY(1.8);
+            */
+          } else if (forward && Shift) {
+            walkForward()
+         
           } else if (backward) {
             setRunVelocity(20);
             setAction(animations.actions.Run);
