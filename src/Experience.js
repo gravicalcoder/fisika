@@ -4,6 +4,7 @@ import {  InstancedRigidBodies, CylinderCollider, BallCollider, CuboidCollider, 
 import {  useMemo, useEffect, useState,useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
+import Player from './Player.js'
 
 
 var sudut = 0
@@ -11,7 +12,7 @@ var sudut = 0
 export default function Experience()
 {
 
-  const cubesCount = 2000
+  const cubesCount = 2
 
   const cubes = useRef()
 
@@ -264,6 +265,8 @@ export default function Experience()
                      <meshStandardMaterial color="tomato" />
                   </instancedMesh>
                 </InstancedRigidBodies>
+
+                <Player />
 
         </Physics>
 
