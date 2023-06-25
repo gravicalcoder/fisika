@@ -160,7 +160,7 @@ export default function Experience()
 
              <RigidBody type="fixed"  restitution={ 1 } friction={ 0.7 } >
                 <mesh receiveShadow position-y={ - 1.25 }>
-                     <boxGeometry args={ [ 140, 0.5, 140 ] } />
+                     <boxGeometry args={ [ 240, 0.5, 240 ] } />
                      <meshStandardMaterial color="greenyellow" />
                  </mesh>
               </RigidBody>

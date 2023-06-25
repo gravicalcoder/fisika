@@ -94,7 +94,39 @@ export default function Player()
 
           
 
+        }   
+        else if (backward && Shift ) {
+            setRunVelocity(7);
+            setAction(animations.actions.Walk)
+            action.play()
+        
+          const updatedPosisiX = posisi[0] + runVelocity * delta;
+          const updatedPosisi = [updatedPosisiX, posisi[1], posisi[2]];
+          //action.play()
+          setPosisi(updatedPosisi);
+          setRotationY(-1.8);
+        } else if (leftward && Shift) {
+          setRunVelocity(7);
+          setAction(animations.actions.Walk)
+          action.play()
+      
+          const updatedPosisiZ = posisi[2] + runVelocity * delta;
+          const updatedPosisi = [posisi[0], posisi[1], updatedPosisiZ];
+          //action.play()
+          setPosisi(updatedPosisi);
+          setRotationY(3.6);
+        } else if (rightward     && Shift) {
+            setRunVelocity(7);
+           setAction(animations.actions.Walk)
+           action.play()
+           
+          const updatedPosisiZ = posisi[2] - runVelocity * delta;
+          const updatedPosisi = [posisi[0], posisi[1], updatedPosisiZ];
+       
+          setPosisi(updatedPosisi);
+          setRotationY(0);
         }
+
 
        
         else if (forward) {
@@ -118,25 +150,7 @@ export default function Player()
 
         }
 
-          else if (Shift) {
-            
-            
-                  
-  
-              setRunVelocity(7);
-              setAction(animations.actions.Walk)
-              action.play()
-              //action.play()
-          
-           
-            const updatedPosisiX = posisi[0] - runVelocity * delta;
-            const updatedPosisi = [updatedPosisiX, posisi[1], posisi[2]];
-        
-              
-            setPosisi(updatedPosisi);
-            setRotationY(1.8);
-  
-          } 
+      
 
   
 
