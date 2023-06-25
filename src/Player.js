@@ -75,7 +75,9 @@ export default function Player()
            }
            
   
-        }   else if (forward && Shift) {
+        }   
+        
+        if (forward && Shift) {
 
       
 
@@ -95,7 +97,7 @@ export default function Player()
           
 
         }   
-        else if (backward && Shift ) {
+         if (backward && Shift ) {
             setRunVelocity(7);
             setAction(animations.actions.Walk)
             action.play()
@@ -105,7 +107,9 @@ export default function Player()
           //action.play()
           setPosisi(updatedPosisi);
           setRotationY(-1.8);
-        } else if (leftward && Shift) {
+        } 
+        
+        if (leftward && Shift) {
           setRunVelocity(7);
           setAction(animations.actions.Walk)
           action.play()
@@ -115,7 +119,9 @@ export default function Player()
           //action.play()
           setPosisi(updatedPosisi);
           setRotationY(3.6);
-        } else if (rightward     && Shift) {
+        } 
+        
+        if (rightward     && Shift) {
             setRunVelocity(7);
            setAction(animations.actions.Walk)
            action.play()
@@ -129,7 +135,7 @@ export default function Player()
 
 
        
-        else if (forward) {
+         if (forward) {
 
       
 
@@ -156,7 +162,7 @@ export default function Player()
 
   
 
-        else if (backward) {
+        if (backward) {
             setRunVelocity(20);
             setAction(animations.actions.Run)
             action.play()
@@ -166,7 +172,9 @@ export default function Player()
           //action.play()
           setPosisi(updatedPosisi);
           setRotationY(-1.8);
-        } else if (leftward) {
+        } 
+        
+        if (leftward) {
           setRunVelocity(20);
           setAction(animations.actions.Run)
           action.play()
@@ -176,7 +184,9 @@ export default function Player()
           //action.play()
           setPosisi(updatedPosisi);
           setRotationY(3.6);
-        } else if (rightward) {
+        } 
+        
+        if (rightward) {
             setRunVelocity(20);
            setAction(animations.actions.Run)
            action.play()
