@@ -335,19 +335,27 @@ export default function Player()
                 if (previousAction) {
                   previousAction.fadeOut(0.2);
                   previousAction.stop();
+                  setAction(animations.actions.Idle);
+                    action.play();
                 }
-                setAction(animations.actions.Idle);
-                action.play();
-                console.log('harusnya idle');
-              } else if (action !== animations.actions.Idle) {
-                if (previousAction) {
-                  previousAction.fadeOut(0.2);
-                  previousAction.stop();
-                }
-                setAction(animations.actions.Idle);
-                action.play();
-                console.log('harusnya idle');
-              } else if (previousAction) {
+
+                if (action !== animations.actions.Idle) {
+                    if (previousAction) {
+                      previousAction.fadeOut(0.2);
+                      previousAction.stop();
+                      setAction(animations.actions.Idle);
+                    action.play();
+                    }
+                    setAction(animations.actions.Idle);
+                    action.play();
+                    console.log('harusnya idle 2');
+                  } else {
+                    setAction(animations.actions.Idle);
+                    action.play();
+                    console.log('harusnya idle 1');
+                  }
+
+              }  else if (previousAction) {
                 previousAction.fadeOut(0.2);
                 previousAction.stop();
                 setAction(animations.actions.Idle);
@@ -357,6 +365,7 @@ export default function Player()
                 action.play();
               }
           } else if (forward && Shift) {
+            console.log('jalan kedepan')
             setRunVelocity(7);
             setAction(animations.actions.Walk);
             action.play();
@@ -365,6 +374,7 @@ export default function Player()
             setPosisi(updatedPosisi);
             setRotationY(1.8);
           } else if (backward && Shift) {
+            console.log('jalan kebelakang')
             setRunVelocity(7);
             setAction(animations.actions.Walk);
             action.play();
