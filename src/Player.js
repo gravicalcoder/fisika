@@ -41,7 +41,7 @@ export default function Player()
         const { forward, backward, leftward, rightward, Shift, walk  } = getKeys()
 
 
-
+/*
         if (!forward && !backward && !leftward && !rightward) {
           if(animations.actions.Walk || animations.actions.Run || animations.actions.TPose){
 
@@ -53,7 +53,7 @@ export default function Player()
             }
             
                  setAction(animations.actions.Idle)
-                 action.play
+                 action.play()
 
 
                  console.log('harusnya idle')  
@@ -67,19 +67,26 @@ export default function Player()
             action.play();
             console.log('harusnya idle');
           }
-           else  {
-            setAction(animations.actions.Idle)
-            action.play
+           else  if (previousAction) {
+
+                previousAction.fadeOut(0.2);
+                previousAction.stop();
+                setAction(animations.actions.Idle)
+                 action.play
+  
+              
+            
 
 
+           } else {
+                 setAction(animations.actions.Idle)
+                 action.play
            }
            
   
         }   
         
-        if (forward && Shift) {
-
-      
+        else if (forward && Shift) {
 
             setRunVelocity(7);
             setAction(animations.actions.Walk)
@@ -96,8 +103,10 @@ export default function Player()
 
           
 
-        }   
-         if (backward && Shift ) {
+        }  
+       
+
+         else if (backward && Shift ) {
             setRunVelocity(7);
             setAction(animations.actions.Walk)
             action.play()
@@ -109,7 +118,7 @@ export default function Player()
           setRotationY(-1.8);
         } 
         
-        if (leftward && Shift) {
+       else  if (leftward && Shift) {
           setRunVelocity(7);
           setAction(animations.actions.Walk)
           action.play()
@@ -121,7 +130,7 @@ export default function Player()
           setRotationY(3.6);
         } 
         
-        if (rightward     && Shift) {
+        else if (rightward     && Shift) {
             setRunVelocity(7);
            setAction(animations.actions.Walk)
            action.play()
@@ -131,16 +140,95 @@ export default function Player()
        
           setPosisi(updatedPosisi);
           setRotationY(0);
-        }
+        } else if (Shift ) {
+            setRunVelocity(7);
+            setAction(animations.actions.Walk)
+     
+        }  
 
 
        
-         if (forward) {
+          else if (forward) {
+
+      
+            if(Shift){
+                setRunVelocity(7);
+                setAction(animations.actions.Walk)
+                action.play()
+                //action.play()
+            
+             
+                const updatedPosisiX = posisi[0] - runVelocity * delta;
+                const updatedPosisi = [updatedPosisiX, posisi[1], posisi[2]];
+          
+                
+                setPosisi(updatedPosisi);
+                setRotationY(1.8);
+             } else {
+                 setRunVelocity(20);
+                    setAction(animations.actions.Run)
+                 action.play()
+            
+        
+         
+                    const updatedPosisiX = posisi[0] - runVelocity * delta;
+                    const updatedPosisi = [updatedPosisiX, posisi[1], posisi[2]];
+      
+            
+                    setPosisi(updatedPosisi);
+                    setRotationY(1.8);
+             }
+
+          
+
+        }
 
       
 
+  
+
+  
+
+        else if (backward) {
             setRunVelocity(20);
             setAction(animations.actions.Run)
+            action.play()
+        
+          const updatedPosisiX = posisi[0] + runVelocity * delta;
+          const updatedPosisi = [updatedPosisiX, posisi[1], posisi[2]];
+          //action.play()
+          setPosisi(updatedPosisi);
+          setRotationY(-1.8);
+        } 
+        
+        else if (leftward) {
+          setRunVelocity(20);
+          setAction(animations.actions.Run)
+          action.play()
+      
+          const updatedPosisiZ = posisi[2] + runVelocity * delta;
+          const updatedPosisi = [posisi[0], posisi[1], updatedPosisiZ];
+          //action.play()
+          setPosisi(updatedPosisi);
+          setRotationY(3.6);
+        } 
+        
+       else  if (rightward) {
+            setRunVelocity(20);
+           setAction(animations.actions.Run)
+           action.play()
+           
+          const updatedPosisiZ = posisi[2] - runVelocity * delta;
+          const updatedPosisi = [posisi[0], posisi[1], updatedPosisiZ];
+       
+          setPosisi(updatedPosisi);
+          setRotationY(0);
+        }
+
+        else if (forward && Shift) {
+
+            setRunVelocity(7);
+            setAction(animations.actions.Walk)
             action.play()
             //action.play()
         
@@ -154,17 +242,9 @@ export default function Player()
 
           
 
-        }
-
-      
-
-  
-
-  
-
-        if (backward) {
-            setRunVelocity(20);
-            setAction(animations.actions.Run)
+        }  else if (backward && Shift ) {
+            setRunVelocity(7);
+            setAction(animations.actions.Walk)
             action.play()
         
           const updatedPosisiX = posisi[0] + runVelocity * delta;
@@ -174,9 +254,9 @@ export default function Player()
           setRotationY(-1.8);
         } 
         
-        if (leftward) {
-          setRunVelocity(20);
-          setAction(animations.actions.Run)
+       else  if (leftward && Shift) {
+          setRunVelocity(7);
+          setAction(animations.actions.Walk)
           action.play()
       
           const updatedPosisiZ = posisi[2] + runVelocity * delta;
@@ -186,9 +266,9 @@ export default function Player()
           setRotationY(3.6);
         } 
         
-        if (rightward) {
-            setRunVelocity(20);
-           setAction(animations.actions.Run)
+        else if (rightward     && Shift) {
+            setRunVelocity(7);
+           setAction(animations.actions.Walk)
            action.play()
            
           const updatedPosisiZ = posisi[2] - runVelocity * delta;
@@ -196,7 +276,169 @@ export default function Player()
        
           setPosisi(updatedPosisi);
           setRotationY(0);
+        }else  if (!forward && !backward && !leftward && !rightward) {
+            if(animations.actions.Walk || animations.actions.Run || animations.actions.TPose){
+  
+              if (previousAction) {
+  
+                previousAction.fadeOut(0.2);
+                previousAction.stop();
+  
+              }
+              
+                   setAction(animations.actions.Idle)
+                   action.play()
+  
+  
+                   console.log('harusnya idle')  
+  
+             } if (action !== animations.actions.Idle) {
+              if (previousAction) {
+                previousAction.fadeOut(0.2);
+                previousAction.stop();
+              }
+              setAction(animations.actions.Idle);
+              action.play();
+              console.log('harusnya idle');
+            }
+             else  if (previousAction) {
+  
+                  previousAction.fadeOut(0.2);
+                  previousAction.stop();
+                  setAction(animations.actions.Idle)
+                   action.play
+    
+                
+              
+  
+  
+             } else {
+                   setAction(animations.actions.Idle)
+                   action.play
+             }
+             
+    
+          }   else {
+
+           
+
+                setAction(animations.actions.Idle)
+                 action.play
+
         }
+  
+         */
+       
+
+        if (!forward && !backward && !leftward && !rightward) {
+            if (animations.actions.Walk || animations.actions.Run || animations.actions.TPose) {
+                if (previousAction) {
+                  previousAction.fadeOut(0.2);
+                  previousAction.stop();
+                }
+                setAction(animations.actions.Idle);
+                action.play();
+                console.log('harusnya idle');
+              } else if (action !== animations.actions.Idle) {
+                if (previousAction) {
+                  previousAction.fadeOut(0.2);
+                  previousAction.stop();
+                }
+                setAction(animations.actions.Idle);
+                action.play();
+                console.log('harusnya idle');
+              } else if (previousAction) {
+                previousAction.fadeOut(0.2);
+                previousAction.stop();
+                setAction(animations.actions.Idle);
+                action.play();
+              } else {
+                setAction(animations.actions.Idle);
+                action.play();
+              }
+          } else if (forward && Shift) {
+            setRunVelocity(7);
+            setAction(animations.actions.Walk);
+            action.play();
+            const updatedPosisiX = posisi[0] - runVelocity * delta;
+            const updatedPosisi = [updatedPosisiX, posisi[1], posisi[2]];
+            setPosisi(updatedPosisi);
+            setRotationY(1.8);
+          } else if (backward && Shift) {
+            setRunVelocity(7);
+            setAction(animations.actions.Walk);
+            action.play();
+            const updatedPosisiX = posisi[0] + runVelocity * delta;
+            const updatedPosisi = [updatedPosisiX, posisi[1], posisi[2]];
+            setPosisi(updatedPosisi);
+            setRotationY(-1.8);
+          } else if (leftward && Shift) {
+            setRunVelocity(7);
+            setAction(animations.actions.Walk);
+            action.play();
+            const updatedPosisiZ = posisi[2] + runVelocity * delta;
+            const updatedPosisi = [posisi[0], posisi[1], updatedPosisiZ];
+            setPosisi(updatedPosisi);
+            setRotationY(3.6);
+          } else if (rightward && Shift) {
+            setRunVelocity(7);
+            setAction(animations.actions.Walk);
+            action.play();
+            const updatedPosisiZ = posisi[2] - runVelocity * delta;
+            const updatedPosisi = [posisi[0], posisi[1], updatedPosisiZ];
+            setPosisi(updatedPosisi);
+            setRotationY(0);
+          } else if (Shift) {
+            setRunVelocity(7);
+            setAction(animations.actions.Walk);
+          } else if (forward) {
+            if (Shift) {
+              setRunVelocity(7);
+              setAction(animations.actions.Walk);
+            } else {
+              setRunVelocity(20);
+              setAction(animations.actions.Run);
+            }
+            action.play();
+            const updatedPosisiX = posisi[0] - runVelocity * delta;
+            const updatedPosisi = [updatedPosisiX, posisi[1], posisi[2]];
+            setPosisi(updatedPosisi);
+            setRotationY(1.8);
+          } else if (backward) {
+            setRunVelocity(20);
+            setAction(animations.actions.Run);
+            action.play();
+            const updatedPosisiX = posisi[0] + runVelocity * delta;
+            const updatedPosisi = [updatedPosisiX, posisi[1], posisi[2]];
+            setPosisi(updatedPosisi);
+            setRotationY(-1.8);
+          } else if (leftward) {
+            setRunVelocity(20);
+            setAction(animations.actions.Run);
+            action.play();
+            const updatedPosisiZ = posisi[2] + runVelocity * delta;
+            const updatedPosisi = [posisi[0], posisi[1], updatedPosisiZ];
+            setPosisi(updatedPosisi);
+            setRotationY(3.6);
+          } else if (rightward) {
+            setRunVelocity(20);
+            setAction(animations.actions.Run);
+            action.play();
+            const updatedPosisiZ = posisi[2] - runVelocity * delta;
+            const updatedPosisi = [posisi[0], posisi[1], updatedPosisiZ];
+            setPosisi(updatedPosisi);
+            setRotationY(0);
+          } else {
+            setAction(animations.actions.Idle);
+            action.play();
+          }
+
+
+        
+            
+
+
+           
 
 		})
 
