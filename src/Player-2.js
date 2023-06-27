@@ -5,30 +5,38 @@ import { useFrame } from '@react-three/fiber'
 export default function PlayerDua()
 {
 
-    const robotKu = useGLTF('./eve.glb')
+    const robotKu = useGLTF('./vee.glb')
 
-    //const animationsKu = useAnimations(robotKu.animations, robot.scene)
+    const animationsKu = useAnimations(robotKu.animations, robotKu.scene)
 
-    //console.log('animationsKu')
+    //animationsKu.actions.combo_punch.play()
+    //animationsKu.actions.firing.play()
+    //animationsKu.actions.walk.play()
+    //animationsKu.actions.jumping_up.play()
+    //animationsKu.actions.jumping_down.play()
+    //animationsKu.actions.flying_kick.play()
+    animationsKu.actions.jump.play()
 
-    const [posisi, setPosisi] = useState([10.5, -1, 0]);
+    console.log(animationsKu)
+
+    //const [posisi, setPosisi] = useState([10.5, -1, 10]);
 
  
 
     return <>
 
                     
-{/*
+
                     <primitive 
                     object={ robotKu.scene } 
-                    scale={ 5.5}
-                    position={ [ -9.5, -1, 0 ] }
+                    scale={ 7.5}
+                    position={ [ 9.5, -1, 10 ] }
                    // position={ [ posisi.posisiX, posisi.posisiZ, posisi.posisiZ  ] }
                     //position={  posisi  }
-                     rotation-y={rotationY }
+                    // rotation-y={rotationY }
                      />
 
-                     */}
+                     
 
 
 
